@@ -4,7 +4,7 @@ from player import Player
 
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons"),
+                     "North of you, the cave mount beckons",['sword']),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
 passages run north and east."""),
@@ -27,44 +27,44 @@ earlier adventurers. The only exit is to the south."""),
 room['outside'].n_to = room['foyer']              #  5 rooms
 room['foyer'].s_to = room['outside']              #                     
 room['foyer'].n_to = room['overlook']             #    ___________________                 
-room['foyer'].e_to = room['narrow']               #    _____|___ok__|__t__
+room['foyer'].e_to = room['narrow']               #    _____|___ok_||__t__
 room['overlook'].s_to = room['foyer']             #    _____|___f___|__n__ 
 room['narrow'].w_to = room['foyer']               #    _____|___os__|_____
 room['narrow'].n_to = room['treasure']            #         
 room['treasure'].s_to = room['narrow']            #       
 
 
+def lead_the_way(player, user_input):
+    valid_selections = ['n','w','s','e']
+    combinations = {
+        'Outside Cave Entrance':{'n': room['foyer']},
+        'Foyer': {'n':room['overlook'],'s':room['outside'],'e':room['narrow']},
+        'Grand Overlook': {'s':room['foyer']},
+        'Narrow Passage': {'n':room['treasure'],'w':room['foyer']},
+        'Treasure Chamber': {'s':room['narrow']}
+        }
+    if user_input in valid_selections:
+        if user_input in combinations[player.room].keys():
+            new_room = combinations[player.room][user_input]# Room Object!
+            print("\n{}\n{}\n".format(new_room.name, new_room.description ))
+            player.travel(new_room.name)
+        else:
+            allowable_movements = combinations[player.room].keys()
+            print('You cant go that WAY, try {}'.format((', ').join(allowable_movements)))
+    else:
+            print('Please use a character among the valid keys')
 
 def start_game():
-    
-    def lead_the_way(user_input):
-        valid_selections = ['n','w','s','e']
-        combinations = {
-            'Outside Cave Entrance':{'n': room['foyer']},
-            'Foyer': {'n':room['overlook'],'s':room['outside'],'e':room['narrow']},
-            'Grand Overlook': {'s':room['foyer']},
-            'Narrow Passage': {'n':room['treasure'],'w':room['foyer']},
-            'Treasure Chamber': {'s':room['narrow']}
-            }
-        if user_input in valid_selections:
-            if user_input in combinations[player1.room].keys():
-                new_room = combinations[player1.room][user_input]# Room Object!
-                print("\n{}\n{}\n".format(new_room.name, new_room.description ))
-                player1.travel(new_room.name)
-            else:
-                allowable_movements = combinations[player1.room].keys()
-                print('You cant go that WAY, try {}'.format((', ').join(allowable_movements)))
-        else:
-                print('Please use a character among the valid keys')
 
     player1 = Player('Outside Cave Entrance')
+    print(player1.inventory)
     print('Welcome to the cave please navigate using keys: N, S, W, E, Q')
     while True:
         user_input = input('Where to (N,S,W,E,Q): ').lower()
         if user_input=='q':
             print('Good-bye Now!')
             break
-        lead_the_way(user_input)
+        lead_the_way(player1, user_input)
     
 
 start_game()
