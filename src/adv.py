@@ -1,5 +1,5 @@
 from room import Room
-
+from player import Player
 # Declare all the rooms
 
 room = {
@@ -24,14 +24,42 @@ earlier adventurers. The only exit is to the south."""),
 
 # Link rooms together
 
-room['outside'].n_to = room['foyer']
-room['foyer'].s_to = room['outside']
-room['foyer'].n_to = room['overlook']
-room['foyer'].e_to = room['narrow']
-room['overlook'].s_to = room['foyer']
-room['narrow'].w_to = room['foyer']
-room['narrow'].n_to = room['treasure']
-room['treasure'].s_to = room['narrow']
+room['outside'].n_to = room['foyer']              #  5 rooms
+room['foyer'].s_to = room['outside']              #                     
+room['foyer'].n_to = room['overlook']             #    ___________________                 
+room['foyer'].e_to = room['narrow']               #    _____|___os__|_____
+room['overlook'].s_to = room['foyer']             #    ___n_|___f___|_____ 
+room['narrow'].w_to = room['foyer']               #    ___t_|___ok__|_____
+room['narrow'].n_to = room['treasure']            #         
+room['treasure'].s_to = room['narrow']            #       
+
+print(room['treasure']['s_to'])
+
+player1 = Player('outside')
+print(player1.room)
+
+def start_game():
+    valid_selections = ['n','w','s','e','q']
+    player1 = Player('outside')
+    while True:
+        user_input = input('Please use N, S, W, E to travel across rooms, press Q to quit ').lower()
+        if user_input in valid_selections:
+            if player1.room=='outside':
+                allowable_movements = {'s': room['outside']}
+                if user_input in allowable_movements.keys():
+                    player1.travel(allowable_movements[user_input].name)
+            if player1.room=='foyer':
+                allowable_movements = {'w','n','s'}
+            if player1.room=='overlook':
+                allowable_movements = ['n','w']
+            if player1.room=='narrow':
+                allowable_movements = ['s','e']
+            if player1.room=='treasure':
+                allowable_movements = ['n']
+            print("You're currently in room {} you can't move {} from here".format(player1.room, user_input))
+        else:
+            print('Please use among the valid keys')
+
 
 #
 # Main
