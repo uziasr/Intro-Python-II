@@ -36,58 +36,36 @@ room['treasure'].s_to = room['narrow']            #
 
 
 def start_game():
-    valid_selections = ['n','w','s','e']
+    
+    def lead_the_way(user_input):
+        valid_selections = ['n','w','s','e']
+        combinations = {
+            'Outside Cave Entrance':{'n': room['foyer']},
+            'Foyer': {'n':room['overlook'],'s':room['outside'],'e':room['narrow']},
+            'Grand Overlook': {'s':room['foyer']},
+            'Narrow Passage': {'n':room['treasure'],'w':room['foyer']},
+            'Treasure Chamber': {'s':room['narrow']}
+            }
+        if user_input in valid_selections:
+            if user_input in combinations[player1.room].keys():
+                new_room = combinations[player1.room][user_input]# Room Object!
+                print("\n{}\n{}\n".format(new_room.name, new_room.description ))
+                player1.travel(new_room.name)
+            else:
+                allowable_movements = combinations[player1.room].keys()
+                print('You cant go that WAY, try {}'.format((', ').join(allowable_movements)))
+        else:
+                print('Please use a character among the valid keys')
+
     player1 = Player('Outside Cave Entrance')
     print('Welcome to the cave please navigate using keys: N, S, W, E, Q')
     while True:
         user_input = input('Where to (N,S,W,E,Q): ').lower()
         if user_input=='q':
+            print('Good-bye Now!')
             break
-        elif user_input in valid_selections:
-            if player1.room=='Outside Cave Entrance':
-                allowable_movements = {'n': room['foyer']}
-                if user_input in allowable_movements.keys():
-                    new_room = allowable_movements[user_input]
-                    print("\n{}\n{}\n".format(new_room.name, new_room.description ))
-                    player1.travel(new_room.name)
-                else:
-                    print('You cant go that WAY, try {}'.format((' ').join(allowable_movements)) )
-            elif player1.room=='Foyer':
-                allowable_movements = {'n':room['overlook'],'s':room['outside'],'e':room['narrow']}
-                if user_input in allowable_movements.keys():
-                    new_room = allowable_movements[user_input]
-                    print("\n{}\n{}\n".format(new_room.name, new_room.description ))
-                    player1.travel(new_room.name)
-                else:
-                    print('You cant go that WAY, try {}'.format((' ').join(allowable_movements)) )
-            elif player1.room=='Grand Overlook':
-                allowable_movements = {'s':room['foyer']}
-                if user_input in allowable_movements.keys():
-                    new_room = allowable_movements[user_input]
-                    print("\n{}\n{}\n".format(new_room.name, new_room.description ))
-                    player1.travel(new_room.name)
-                else:
-                    print('You cant go that WAY, try {}'.format((' ').join(allowable_movements)) )
-            elif player1.room=='Narrow Passage':
-                allowable_movements = {'n':room['treasure'],'w':room['foyer']}
-                if user_input in allowable_movements.keys():
-                    new_room = allowable_movements[user_input]
-                    print("\n{}\n{}\n".format(new_room.name, new_room.description ))
-                    player1.travel(new_room.name)
-                else:
-                    print('You cant go that WAY, try {}'.format((' ').join(allowable_movements)) )
-            elif player1.room=='Treasure Chamber':
-                allowable_movements = {'s':room['narrow']}
-                if user_input in allowable_movements.keys():
-                    new_room = allowable_movements[user_input]
-                    print("\n{}\n{}\n".format(new_room.name, new_room.description ))
-                    player1.travel(new_room.name)
-                else:
-                    print('You cant go that WAY, try {}'.format((' ').join(allowable_movements)) )
-                    # print("You're currently in room {} you can't move {} from here".format(player1.room, user_input))
-        else:
-            print('Please use among the valid keys')
-
+        lead_the_way(user_input)
+    
 
 start_game()
 #
